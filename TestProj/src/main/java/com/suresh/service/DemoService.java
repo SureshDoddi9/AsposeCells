@@ -1,13 +1,16 @@
 package com.suresh.service;
 
 import com.aspose.cells.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.suresh.model.Functionality;
+import com.suresh.model.RenameReq;
 import com.suresh.model.ReqInput;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.Map;
 
 @Service
 @Slf4j
@@ -18,12 +21,15 @@ public class DemoService {
 
 
 
-    public String updateOperations(ReqInput reqInput) throws Exception {
-        if(reqInput.getFunctionality().equals(Functionality.NUMBER_TO_TEXT.getFunction())){
-            numberToText(reqInput);
+    public String updateOperations(Map<String, Object> object) throws Exception {
+        ObjectMapper mapper = new ObjectMapper();
+        if(object.get("functionality").equals(Functionality.NUMBER_TO_TEXT.getFunction())){
+            ReqInput reqObject = mapper.convertValue(object,ReqInput.class);
+            numberToText(reqObject);
         }
-        if(reqInput.getFunctionality().equals(Functionality.RENAME_SHEET.getFunction())){
-            renameWorkSheet(reqInput);
+        if(object.get("functionality").equals(Functionality.RENAME_SHEET.getFunction())){
+            RenameReq reqObject = mapper.convertValue(object, RenameReq.class);
+            renameWorkSheet(reqObject);
         }
         return "success";
     }
@@ -82,13 +88,14 @@ public class DemoService {
         workbook.save(updatedFile);
     }
 
-    public void renameWorkSheet(ReqInput input) throws Exception {
+    public void renameWorkSheet(RenameReq input) throws Exception {
+
         String updatedFileName  = FILE_NAME.replace("filename",input.getFileName());
         FileInputStream excelFile = new FileInputStream(new File(updatedFileName));
         Workbook workbook = new Workbook(excelFile);
 
         Worksheet worksheet = workbook.getWorksheets().get(input.getSheetName());
-        worksheet.setName("mySheet");
+        worksheet.setName(input.getRequestedName());
         workbook.save(updatedFileName);
 
     }
