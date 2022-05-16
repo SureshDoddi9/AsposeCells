@@ -27,6 +27,10 @@ public class DemoService {
             ReqInput reqObject = mapper.convertValue(object,ReqInput.class);
             numberToText(reqObject);
         }
+        if(object.get("functionality").equals(Functionality.TEXT_TO_NUMBER.getFunction())){
+            ReqInput reqObject = mapper.convertValue(object,ReqInput.class);
+            textToNumber(reqObject);
+        }
         if(object.get("functionality").equals(Functionality.RENAME_SHEET.getFunction())){
             RenameReq reqObject = mapper.convertValue(object, RenameReq.class);
             renameWorkSheet(reqObject);
