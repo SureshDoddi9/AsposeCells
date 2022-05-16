@@ -22,6 +22,9 @@ public class DemoService {
         if(reqInput.getFunctionality().equals(Functionality.NUMBER_TO_TEXT.getFunction())){
             numberToText(reqInput);
         }
+        if(reqInput.getFunctionality().equals(Functionality.RENAME_SHEET.getFunction())){
+            renameWorkSheet(reqInput);
+        }
         return "success";
     }
 
@@ -79,7 +82,14 @@ public class DemoService {
         workbook.save(updatedFile);
     }
 
-    public void renameWorkSheet(){
+    public void renameWorkSheet(ReqInput input) throws Exception {
+        String updatedFileName  = FILE_NAME.replace("filename",input.getFileName());
+        FileInputStream excelFile = new FileInputStream(new File(updatedFileName));
+        Workbook workbook = new Workbook(excelFile);
+
+        Worksheet worksheet = workbook.getWorksheets().get(input.getSheetName());
+        worksheet.setName("mySheet");
+        workbook.save(updatedFileName);
 
     }
 }
