@@ -15,8 +15,8 @@ import java.util.Map;
 @Service
 @Slf4j
 public class DemoService {
-    private String FILE_NAME = "E:/MyProj/filename";
-    private String updatedFile = "E:/MyProj/updated.xlsx";
+    private String FILE_NAME = "C:/Users/Dell/Downloads/filename";
+    private String updatedFile = "C:/Users/Dell/Downloads/updated.xlsx";
 
 
 
@@ -34,6 +34,10 @@ public class DemoService {
         if(object.get("functionality").equals(Functionality.RENAME_SHEET.getFunction())){
             RenameReq reqObject = mapper.convertValue(object, RenameReq.class);
             renameWorkSheet(reqObject);
+        }
+        if(object.get("functionality").equals(Functionality.SHEET_FORMAT.getFunction())){
+            RenameReq reqObject = mapper.convertValue(object, RenameReq.class);
+            changingFormat(reqObject);
         }
         return "success";
     }
@@ -103,4 +107,16 @@ public class DemoService {
         workbook.save(updatedFileName);
 
     }
+    public void changingFormat(RenameReq input) throws Exception {
+
+        String updatedFileName  = FILE_NAME.replace("filename",input.getFileName());
+        FileInputStream file = new FileInputStream(new File(updatedFileName));
+        Workbook workbook = new Workbook(file);
+
+        Worksheet worksheet = workbook.getWorksheets().get(input.getSheetName());
+        worksheet.setName(input.getRequestedName());
+        workbook.save(updatedFileName, FileFormatType.XLSX);
+
+    }
+
 }
