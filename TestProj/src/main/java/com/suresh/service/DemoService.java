@@ -111,11 +111,13 @@ public class DemoService {
 
         String updatedFileName  = FILE_NAME.replace("filename",input.getFileName());
         FileInputStream file = new FileInputStream(new File(updatedFileName));
-        Workbook workbook = new Workbook(file);
+        LoadOptions loadOptions=new LoadOptions(FileFormatType.CSV);
+        Workbook workbook = new Workbook(file,loadOptions);
 
-        Worksheet worksheet = workbook.getWorksheets().get(input.getSheetName());
-        worksheet.setName(input.getRequestedName());
-        workbook.save(updatedFileName, FileFormatType.XLSX);
+        String newFileName= input.getFileName().replace(".csv",".xlsx");
+        String newFileDirectory=FILE_NAME.replace("filename",newFileName);
+
+        workbook.save(newFileDirectory, SaveFormat.XLSX);
 
     }
 
