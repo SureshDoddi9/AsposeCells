@@ -15,5 +15,7 @@ public class TestProjApplication {
 
 	public static void main(String[] args) throws Exception {
 		SpringApplication.run(TestProjApplication.class, args);
+		AsposeService asposeService = new AsposeService();
+		asposeService.extractDate();
 	}
 }

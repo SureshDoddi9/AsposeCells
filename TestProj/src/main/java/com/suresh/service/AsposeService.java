@@ -6,12 +6,20 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 public class AsposeService {
 
-    private static final String FILE_NAME = "E:/MyProj/test1.xlsx";
+    private static final String FILE_NAME = "E:/MyProj/test1_ADD_P202201.xls";
     private String updatedFile = "E:/MyProj/updated.xlsx";
     public void setStyles() throws Exception {
 // Instantiating a Workbook object
@@ -61,5 +69,42 @@ public class AsposeService {
 // Saving the modified Excel file in default (that is Excel 2003) format
         workbook.save(updatedFile);
         System.out.println("done............");
+    }
+
+    public void extractDate() throws Exception {
+//        Path path = Paths.get(FILE_NAME).getFileName().toString();
+//        Path file = path.getFileName();
+        System.out.println(Paths.get(FILE_NAME).getFileName().toString());
+
+        String file = Paths.get(FILE_NAME).getFileName().toString();
+
+        String strPattern = "\\d{4}\\d{2}";
+
+        Pattern pattern = Pattern.compile(strPattern);
+        Matcher matcher = pattern.matcher(file);
+        String str = null;
+        while( matcher.find() ) {
+            str = matcher.group();
+        }
+        System.out.println(str);
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMM");
+        Date date1 = sdf.parse(str);
+        Date date2 = sdf.parse(sdf.format(new Date()));
+
+        System.out.println("date1 : " + sdf.format(date1));
+        System.out.println("date2 : " + sdf.format(date2));
+
+        if (date1.equals(date2)) {
+            System.out.println("Date1 is equal Date2");
+        }
+
+        if (date1.after(date2)) {
+            System.out.println("Date1 is after Date2");
+        }
+
+        if (date1.before(date2)) {
+            System.out.println("Date1 is before Date2");
+        }
     }
 }
