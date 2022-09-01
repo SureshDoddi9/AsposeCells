@@ -10,6 +10,9 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -17,6 +20,11 @@ import java.util.Map;
 public class DemoService {
     private String FILE_NAME = "C:/Users/Dell/Downloads/filename";
     private String updatedFile = "C:/Users/Dell/Downloads/updated.xlsx";
+
+    private String ff = "E:/Excels/Book1.xlsx";
+
+    private String ff2 = "E:/Excels/Excels2/updatedBook1.xlsx";
+
 
 
 
@@ -120,5 +128,41 @@ public class DemoService {
         workbook.save(newFileDirectory, SaveFormat.XLSX);
 
     }
+
+    public void calculate() throws Exception {
+        FileInputStream excelFile = new FileInputStream(new File(ff));
+        Workbook workbook = new Workbook(excelFile);
+
+        Worksheet worksheet = workbook.getWorksheets().get("Sheet1");
+        Cells cells = worksheet.getCells();
+
+        for(int i=0;i<=cells.getMaxColumn();i++) {
+            if(i==0){
+                cells.get(cells.getMaxRow()+1,i).setValue("Difference");
+            }else {
+                double doubleSum = 0;
+                int intSum = 0;
+                //Amount Column is in Double Type
+                if (i == 3){
+                    for (int j = cells.getMaxRow() - 2; j > 0; j--) {
+                        doubleSum = doubleSum + cells.get(j, i).getDoubleValue();
+                    }
+                    System.out.println(cells.get(cells.getMaxRow() - 1, i).getDoubleValue());
+                    double totalData = cells.get(cells.getMaxRow() - 1, i).getDoubleValue() - doubleSum;
+                    cells.get(cells.getMaxRow(), i).setValue(totalData);
+                }else{
+                    //remaining columns are in int type
+                    for (int j = cells.getMaxRow() - 2; j > 0; j--) {
+                        intSum = intSum + cells.get(j, i).getIntValue();
+                    }
+                    System.out.println(cells.get(cells.getMaxRow() - 1, i).getIntValue());
+                    int totalData = cells.get(cells.getMaxRow() - 1, i).getIntValue() - intSum;
+                    cells.get(cells.getMaxRow(), i).setValue(totalData);
+                }
+            }
+        }
+        workbook.save(ff2,SaveFormat.XLSX);
+    }
+
 
 }
