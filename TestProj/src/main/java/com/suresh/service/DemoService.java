@@ -130,39 +130,94 @@ public class DemoService {
     }
 
     public void calculate() throws Exception {
+        String maintab = "HRCEU";
         FileInputStream excelFile = new FileInputStream(new File(ff));
         Workbook workbook = new Workbook(excelFile);
 
         Worksheet worksheet = workbook.getWorksheets().get("Sheet1");
         Cells cells = worksheet.getCells();
+        FindOptions findoptions = new  FindOptions();
+        findoptions.setLookAtType(LookAtType.START_WITH);
+        Cell cell = cells.find(maintab,null,findoptions);
+        int mainRow = cell.getRow();
+        cell.getColumn();
 
         for(int i=0;i<=cells.getMaxColumn();i++) {
             if(i==0){
+                int mrow = cells.getMaxRow();
                 cells.get(cells.getMaxRow()+1,i).setValue("Difference");
             }else {
-                double doubleSum = 0;
-                int intSum = 0;
-                //Amount Column is in Double Type
-                if (i == 3){
-                    for (int j = cells.getMaxRow() - 2; j > 0; j--) {
-                        doubleSum = doubleSum + cells.get(j, i).getDoubleValue();
+
+//                double doubleSum = 0;
+//                int intSum = 0;
+//                //Amount Column is in Double Type
+//                if (i == 3){
+//                    System.out.println("......................");
+//                    for (int j = cells.getMaxRow()-1; j > 0; j--) {
+//                        if(j!=mainRow) {
+//                            System.out.println(cells.get(j, i).getDoubleValue());
+//                            doubleSum = doubleSum + cells.get(j, i).getDoubleValue();
+//                        }
+//                    }
+//                    System.out.println("doubleSum: "+doubleSum);
+//                    System.out.println("......................");
+//                    System.out.println(cells.get(mainRow, i).getDoubleValue());
+//                    double totalData = cells.get(mainRow, i).getDoubleValue() - doubleSum;
+//                    cells.get(cells.getMaxRow(), i).setValue(totalData);
+//                }else{
+//                    //remaining columns are in int type
+//                    System.out.println(".....................");
+//                    for (int j = cells.getMaxRow() - 1; j > 0; j--) {
+//                        if(j!=mainRow) {
+//                            System.out.println(cells.get(j, i).getIntValue());
+//                            intSum = intSum + cells.get(j, i).getIntValue();
+//                        }
+//                    }
+//                    System.out.println("int sum: "+intSum);
+//                    System.out.println("......................");
+//                    System.out.println(cells.get(mainRow, i).getIntValue());
+//                    int totalData = cells.get(mainRow, i).getIntValue() - intSum;
+//                    System.out.println("totaldata: "+totalData);
+//                    cells.get(cells.getMaxRow(), i).setValue(totalData);
+//                    System.out.println("data::::"+cells.get(cells.getMaxRow(), i).getIntValue());
+//                }
+
+
+                var formula = "SUM(%s%s-(%s))";
+                //columns
+                for(int col=1;col<cells.getMaxColumn();col++) {
+                    String subFormula = "";
+                    String finalFormula = "";
+                    if(col ==1) {
+                      subFormula =  getMainString(cells,mainRow,"B");
+                      finalFormula = String.format(formula,"B",mainRow,subFormula);
+                      cells.get(cells.getMaxRow(),col).setFormula(finalFormula);
                     }
-                    System.out.println(cells.get(cells.getMaxRow() - 1, i).getDoubleValue());
-                    double totalData = cells.get(cells.getMaxRow() - 1, i).getDoubleValue() - doubleSum;
-                    cells.get(cells.getMaxRow(), i).setValue(totalData);
-                }else{
-                    //remaining columns are in int type
-                    for (int j = cells.getMaxRow() - 2; j > 0; j--) {
-                        intSum = intSum + cells.get(j, i).getIntValue();
+                    if(col==2){
+                        subFormula = getMainString(cells,mainRow,"C");
+                        finalFormula = String.format(formula,"B",mainRow,subFormula);
+                        cells.get(cells.getMaxRow(),col).setFormula(finalFormula);
                     }
-                    System.out.println(cells.get(cells.getMaxRow() - 1, i).getIntValue());
-                    int totalData = cells.get(cells.getMaxRow() - 1, i).getIntValue() - intSum;
-                    cells.get(cells.getMaxRow(), i).setValue(totalData);
+                    if(col==3){
+                        subFormula = getMainString(cells,mainRow,"D");
+                        finalFormula = String.format(formula,"B",mainRow,subFormula);
+                        cells.get(cells.getMaxRow(),col).setFormula(finalFormula);
+                    }
                 }
             }
-        }
-        workbook.save(ff2,SaveFormat.XLSX);
-    }
 
+            }
+         workbook.save(ff2,SaveFormat.XLSX);
+        }
+
+    public String getMainString(Cells cells,int mainRow,String col){
+        StringBuilder mainStr = new StringBuilder("");
+        for (int j = 1; j < cells.getMaxRow() - 1; j++) {
+            if (j != mainRow) {
+                mainStr = mainStr.append("+"+col+j);
+            }
+        }
+        return mainStr.toString();
+    }
 
 }

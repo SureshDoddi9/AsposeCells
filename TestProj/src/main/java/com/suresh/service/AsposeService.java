@@ -4,10 +4,7 @@ import com.aspose.cells.*;
 import org.apache.tomcat.jni.Directory;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
@@ -106,5 +103,16 @@ public class AsposeService {
         if (date1.before(date2)) {
             System.out.println("Date1 is before Date2");
         }
+    }
+
+    public void checkFileType(){
+        StringBuilder finalColumn = new StringBuilder("USD");
+        System.out.println(finalColumn.toString());
+//        String file = Paths.get(filePath).getFileName().toString();
+//        if(file.contains("TR") || file.contains("CP")) {
+//            finalColumn = new StringBuilder("CAD");
+//        }
+        finalColumn = new StringBuilder("CAD");
+        System.out.println(finalColumn.toString());
     }
 }
