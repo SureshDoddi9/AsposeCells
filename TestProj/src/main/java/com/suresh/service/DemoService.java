@@ -142,10 +142,10 @@ public class DemoService {
         int mainRow = cell.getRow();
         cell.getColumn();
 
-        for(int i=0;i<=cells.getMaxColumn();i++) {
-            if(i==0){
+        for(int col=0;col<=cells.getMaxColumn();col++) {
+            if(col==0){
                 int mrow = cells.getMaxRow();
-                cells.get(cells.getMaxRow()+1,i).setValue("Difference");
+                cells.get(cells.getMaxRow()+1,col).setValue("Difference");
             }else {
 
 //                double doubleSum = 0;
@@ -183,40 +183,42 @@ public class DemoService {
 //                }
 
 
-                var formula = "SUM(%s%s-(%s))";
+                var formula = "%s%s-SUM(%s)";
                 //columns
-                for(int col=1;col<cells.getMaxColumn();col++) {
                     String subFormula = "";
                     String finalFormula = "";
                     if(col ==1) {
                       subFormula =  getMainString(cells,mainRow,"B");
-                      finalFormula = String.format(formula,"B",mainRow,subFormula);
+                      finalFormula = String.format(formula,"B",mainRow+1,subFormula);
                       cells.get(cells.getMaxRow(),col).setFormula(finalFormula);
+                      System.out.println(cells.get(cells.getMaxRow(),col));
                     }
                     if(col==2){
                         subFormula = getMainString(cells,mainRow,"C");
-                        finalFormula = String.format(formula,"B",mainRow,subFormula);
+                        finalFormula = String.format(formula,"C",mainRow+1,subFormula);
                         cells.get(cells.getMaxRow(),col).setFormula(finalFormula);
                     }
                     if(col==3){
                         subFormula = getMainString(cells,mainRow,"D");
-                        finalFormula = String.format(formula,"B",mainRow,subFormula);
+                        finalFormula = String.format(formula,"D",mainRow+1,subFormula);
                         cells.get(cells.getMaxRow(),col).setFormula(finalFormula);
                     }
                 }
-            }
 
             }
+         workbook.calculateFormula();
          workbook.save(ff2,SaveFormat.XLSX);
+         workbook.dispose();
         }
 
     public String getMainString(Cells cells,int mainRow,String col){
         StringBuilder mainStr = new StringBuilder("");
-        for (int j = 1; j < cells.getMaxRow() - 1; j++) {
-            if (j != mainRow) {
-                mainStr = mainStr.append("+"+col+j);
-            }
+        for (int j = 2; j <=cells.getMaxRow(); j++) {
+                if (j != mainRow + 1) {
+                    mainStr = mainStr.append("," + col + j);
+                }
         }
+        mainStr.replace(0,1,"");
         return mainStr.toString();
     }
 
