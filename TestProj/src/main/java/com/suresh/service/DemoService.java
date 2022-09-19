@@ -135,9 +135,17 @@ public class DemoService {
         Workbook workbook = new Workbook(excelFile);
 
         Worksheet worksheet = workbook.getWorksheets().get("Sheet1");
+//        worksheet.getCells().deleteBlankRows();
+//        worksheet.getCells().deleteBlankColumns();
         Cells cells = worksheet.getCells();
         FindOptions findoptions = new  FindOptions();
-        findoptions.setLookAtType(LookAtType.START_WITH);
+        CellArea cellArea = new CellArea();
+        cellArea.StartColumn=0;
+        cellArea.EndColumn = 0;
+        cellArea.StartRow = 0;
+        cellArea.EndRow = cells.getMaxRow();
+        findoptions.setRange(cellArea);
+        findoptions.setLookAtType(LookAtType.ENTIRE_CONTENT);
         Cell cell = cells.find(maintab,null,findoptions);
         int mainRow = cell.getRow();
         cell.getColumn();
