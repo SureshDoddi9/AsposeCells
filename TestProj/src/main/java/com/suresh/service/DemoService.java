@@ -11,9 +11,10 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -228,6 +229,26 @@ public class DemoService {
         }
         mainStr.replace(0,1,"");
         return mainStr.toString();
+    }
+
+    public void testmethod(){
+        List<String> dates = new ArrayList<>();
+        dates.add("10/5/2022");
+        dates.add("7/5/2022");
+        dates.add("11/5/2021");
+
+        Collections.sort(dates, new Comparator<String>() {
+            DateFormat f = new SimpleDateFormat("dd/mm/yyyy");
+            @Override
+            public int compare(String o1, String o2) {
+                try {
+                    return f.parse(o1).compareTo(f.parse(o2));
+                } catch (ParseException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+        System.out.println(dates.toString());
     }
 
 }
